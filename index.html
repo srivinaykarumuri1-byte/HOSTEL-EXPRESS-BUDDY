@@ -1,24 +1,93 @@
-function showLogin() {
-    let user = localStorage.getItem("hostel_user");
-    if(!user) {
-        document.body.innerHTML = `
-            <div style="padding:40px; text-align:center; background:#fff; height:100vh;">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="100">
-                <h2>Hostel Mart Login</h2>
-                <input type="text" id="uName" placeholder="Mee Name" style="width:80%; padding:12px; margin:10px; border:1px solid #ccc;">
-                <input type="number" id="uPhone" placeholder="Phone Number" style="width:80%; padding:12px; margin:10px; border:1px solid #ccc;">
-                <p>Upload Photo:</p>
-                <input type="file" id="uPhoto" style="margin-bottom:20px;">
-                <button onclick="doLogin()" style="width:80%; padding:15px; background:#2874f0; color:#fff; border:none; border-radius:5px; font-weight:bold;">LOGIN</button>
-            </div>
-        `;
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Mart</title>
+    <style>
+        body { font-family: sans-serif; background: #f1f3f6; margin: 0; padding-bottom: 80px; }
+        header { background: #2874f0; color: white; padding: 15px; text-align: center; }
+        .login-screen { padding: 40px; text-align: center; background: white; height: 100vh; display: none; }
+        .main-content { display: none; }
+        input { width: 80%; padding: 12px; margin: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .btn { width: 80%; padding: 15px; background: #2874f0; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .card { background: white; margin: 10px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+        .product-img { width: 80px; height: 80px; object-fit: contain; }
+    </style>
+</head>
+<body>
+
+<div id="loginPage" class="login-screen">
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80">
+    <h2>Hostel Mart Login</h2>
+    <input type="text" id="uName" placeholder="Enter Your Name">
+    <input type="number" id="uPhone" placeholder="Phone Number">
+    <p>Upload Photo:</p>
+    <input type="file" id="uPhoto">
+    <button class="btn" onclick="doLogin()">LOGIN</button>
+</div>
+
+<div id="appPage" class="main-content">
+    <header>
+        <h2>Hostel Mart</h2>
+        <small id="welcomeMsg"></small>
+    </header>
+    
+    <div style="padding: 10px; text-align: center;">
+        <img src="https://cdn-icons-png.flaticon.com/512/2940/2940640.png" width="150">
+        <h3>Stationary Store</h3>
+    </div>
+
+    <div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3308/3308336.png" class="product-img">
+        <h4>Notebook</h4>
+        <p>Price: ₹40 | Delivery: ₹10</p>
+        <button class="btn" style="background:#fb641b;" onclick="orderPlaced('Notebook', 40)">ORDER NOW</button>
+    </div>
+    
+    <button onclick="agentLogin()" style="margin-top: 20px; color: #2874f0; border: none; background: none; width: 100%;">Agent Login (Staff Only)</button>
+</div>
+
+<script>
+    // Login logic
+    function checkUser() {
+        let user = localStorage.getItem("hostel_user");
+        if (user) {
+            document.getElementById("appPage").style.display = "block";
+            document.getElementById("welcomeMsg").innerText = "Welcome, " + user;
+        } else {
+            document.getElementById("loginPage").style.display = "block";
+        }
     }
-}
-function doLogin() {
-    let name = document.getElementById('uName').value;
-    if(name) {
-        localStorage.setItem("hostel_user", name);
-        location.reload();
+
+    function doLogin() {
+        let name = document.getElementById("uName").value;
+        let phone = document.getElementById("uPhone").value;
+        if (name && phone) {
+            localStorage.setItem("hostel_user", name);
+            alert("Login Successful!");
+            location.reload();
+        } else {
+            alert("Please enter Name and Phone!");
+        }
     }
-}
-window.onload = showLogin;
+
+    function orderPlaced(item, price) {
+        alert("🎉 Order Placed Successfully!\nItem: " + item + "\nTotal: ₹" + (price + 10) + "\nDelivery: Today 5-6 PM");
+    }
+
+    function agentLogin() {
+        let pin = prompt("Agent Password Enter Cheyandi:");
+        if (pin === "1234") {
+            alert("Welcome Agent-5! Mee orders ready ga unnayi.");
+            // Ikkada agent dashboard chupinchocchu
+        } else {
+            alert("Wrong Password!");
+        }
+    }
+
+    window.onload = checkUser;
+</script>
+
+</body>
+</html>
