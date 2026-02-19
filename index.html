@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Mart | Stationary</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; margin: 0; }
+        header { background: #2874f0; color: white; padding: 15px; text-align: center; font-weight: bold; }
+        
+        /* Category Section */
+        .category-box { background: white; padding: 20px; text-align: center; margin: 10px; border-radius: 8px; cursor: pointer; border: 2px solid #2874f0; }
+        
+        /* Product Card */
+        .product-grid { display: none; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        .card { background: white; padding: 10px; border-radius: 8px; text-align: center; }
+        .card img { width: 70px; }
+        
+        /* Counter Style */
+        .counter-btn { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+        .btn { background: #fb641b; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; }
+        .add-btn { background: #2874f0; color: white; border: none; padding: 8px 20px; border-radius: 4px; width: 100%; }
+        
+        .order-info { background: #fff; padding: 15px; position: fixed; bottom: 0; width: 100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<header>HOSTEL MART</header>
+
+<div id="category-page">
+    <div class="category-box" onclick="showStationary()">
+        <img src="https://cdn-icons-png.flaticon.com/512/2940/2940640.png" width="50"><br>
+        STATIONARY
+    </div>
+</div>
+
+<div id="stationary-page" class="product-grid">
+    <div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/115/115911.png">
+        <h4>Eraser</h4>
+        <p>Price: ₹5</p>
+        <div id="eraser-ctrl">
+            <button class="add-btn" onclick="addToCart('eraser')">ADD</button>
+        </div>
+    </div>
+    
+    <div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3308/3308336.png">
+        <h4>Notebook</h4>
+        <p>Price: ₹40</p>
+        <div id="book-ctrl">
+            <button class="add-btn" onclick="addToCart('book')">ADD</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let counts = { eraser: 0, book: 0 };
+
+    function showStationary() {
+        document.getElementById('category-page').style.display = 'none';
+        document.getElementById('stationary-page').style.display = 'grid';
+    }
+
+    function addToCart(item) {
+        counts[item] = 1;
+        updateUI(item);
+    }
+
+    function changeQty(item, delta) {
+        counts[item] += delta;
+        if (counts[item] < 0) counts[item] = 0;
+        updateUI(item);
+    }
+
+    function updateUI(item) {
+        let divId = item === 'eraser' ? 'eraser-ctrl' : 'book-ctrl';
+        if (counts[item] > 0) {
+            document.getElementById(divId).innerHTML = `
+                <div class="counter-btn">
+                    <button class="btn" onclick="changeQty('${item}', -1)">-</button>
+                    <span>${counts[item]}</span>
+                    <button class="btn" onclick="changeQty('${item}', 1)">+</button>
+                </div>`;
+        } else {
+            document.getElementById(divId).innerHTML = `<button class="add-btn" onclick="addToCart('${item}')">ADD</button>`;
+        }
+    }
+</script>
+
+</body>
+</html>
