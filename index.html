@@ -3,21 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostel Mart | Complete App</title>
+    <title>Hostel Mart | Customer Store</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f1f3f6; margin: 0; padding-bottom: 80px; }
-        header { background: #2874f0; color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; }
-        .login-screen, .agent-screen { padding: 40px; text-align: center; background: white; min-height: 100vh; display: none; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f3f6; margin: 0; padding-bottom: 20px; }
+        header { background: #2874f0; color: white; padding: 15px; text-align: center; font-weight: bold; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        .login-screen { padding: 40px; text-align: center; background: white; height: 100vh; display: none; }
         .main-content { display: none; }
+        
         input { width: 85%; padding: 12px; margin: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
         .btn { width: 85%; padding: 15px; background: #2874f0; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        .card { background: white; margin: 15px; padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
+
+        /* Banner from your photo */
+        .stationary-banner { background: #fff; padding: 15px; text-align: center; margin-bottom: 10px; }
+        .stationary-banner img { width: 100%; max-width: 400px; border-radius: 10px; }
+
+        /* Grid for Items */
         .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
-        .item-card { background: white; padding: 10px; border-radius: 8px; text-align: center; }
-        .item-card img { width: 70px; height: 70px; object-fit: contain; }
-        .price { font-weight: bold; font-size: 16px; margin: 5px 0; }
-        .add-btn { background: #fff; color: #2874f0; border: 1px solid #2874f0; padding: 5px 10px; border-radius: 4px; font-weight: bold; width: 100%; }
-        .order-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); z-index: 1000; text-align: center; width: 80%; }
+        .card { background: white; padding: 10px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card img { width: 80px; height: 80px; object-fit: contain; }
+        .price { font-weight: bold; color: #212121; font-size: 16px; margin: 5px 0; }
+        .delivery { font-size: 11px; color: #388e3c; font-weight: bold; }
+
+        /* Counter Buttons */
+        .qty-box { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+        .q-btn { background: #2874f0; color: white; border: none; padding: 5px 12px; border-radius: 4px; font-weight: bold; }
+        .add-btn { background: #fff; color: #2874f0; border: 1px solid #2874f0; padding: 5px; border-radius: 4px; width: 100%; font-weight: bold; }
+
+        /* Order Popup */
+        #popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); z-index: 1000; text-align: center; width: 80%; }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; }
     </style>
 </head>
@@ -26,117 +40,129 @@
 <div id="loginPage" class="login-screen">
     <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80">
     <h2 style="color: #2874f0;">Hostel Mart Login</h2>
-    <input type="text" id="uName" placeholder="Mee Name">
+    <input type="text" id="uName" placeholder="Mee Name (Full Name)">
     <input type="number" id="uPhone" placeholder="Phone Number">
-    <p>Profile Photo Upload:</p>
+    <p style="font-size: 12px; color: #666;">Profile Photo Upload:</p>
     <input type="file" id="uPhoto">
-    <button class="btn" onclick="doLogin()">LOGIN</button>
+    <button class="btn" onclick="doLogin()">START SHOPPING</button>
 </div>
 
 <div id="appPage" class="main-content">
-    <header>
-        <div>Hostel Mart</div>
-        <small id="welcomeMsg"></small>
-    </header>
-
-    <div style="padding: 15px; text-align: center; background: white;">
-        <img src="https://cdn-icons-png.flaticon.com/512/2940/2940640.png" width="100">
-        <h3>Stationary Section</h3>
+    <header>Hostel Mart <br><small id="welcomeText"></small></header>
+    
+    <div class="stationary-banner">
+        <img src="https://images.unsplash.com/photo-1583413230540-ddf9068c9d2d?q=80&w=1000&auto=format&fit=crop" alt="Stationary">
+        <h3 style="margin: 10px 0 0;">Stationary Store</h3>
+        <p style="font-size: 12px; color: #666;">Daily Delivery: 5:00 PM - 6:00 PM</p>
     </div>
 
-    <div class="product-grid">
-        <div class="item-card">
-            <img src="https://cdn-icons-png.flaticon.com/512/3308/3308336.png">
-            <p>Notebook</p>
-            <div class="price">₹40</div>
-            <button class="add-btn" onclick="openOrder('Notebook', 40)">ORDER</button>
+    <div class="product-grid" id="product-list">
         </div>
-        <div class="item-card">
-            <img src="https://cdn-icons-png.flaticon.com/512/115/115911.png">
-            <p>Eraser</p>
-            <div class="price">₹5</div>
-            <button class="add-btn" onclick="openOrder('Eraser', 5)">ORDER</button>
-        </div>
-        <div class="item-card">
-            <img src="https://cdn-icons-png.flaticon.com/512/581/581023.png">
-            <p>Blue Pen</p>
-            <div class="price">₹10</div>
-            <button class="add-btn" onclick="openOrder('Blue Pen', 10)">ORDER</button>
-        </div>
-        <div class="item-card">
-            <img src="https://cdn-icons-png.flaticon.com/512/3069/3069351.png">
-            <p>Steel Scale</p>
-            <div class="price">₹20</div>
-            <button class="add-btn" onclick="openOrder('Steel Scale', 20)">ORDER</button>
-        </div>
-    </div>
-
-    <center>
-        <button onclick="goToAgent()" style="margin-top:20px; color:#2874f0; border:none; background:none; text-decoration:underline;">Agent Login</button>
-    </center>
-</div>
-
-<div id="agentPage" class="agent-screen">
-    <h2>Agent Terminal</h2>
-    <div id="ordersList" style="text-align: left; background: #f9f9f9; padding: 10px; border-radius: 8px;">
-        <p>No orders yet for 5:00 PM delivery.</p>
-    </div>
-    <br>
-    <button class="btn" onclick="location.reload()" style="background: #777;">BACK TO STORE</button>
 </div>
 
 <div id="overlay"></div>
-<div id="orderPopup" class="order-popup">
-    <h3>🎉 Order Placed!</h3>
-    <div id="billArea" style="text-align:left; font-size:14px; margin:15px 0; border:1px dashed #ccc; padding:10px;"></div>
-    <p>Delivery: <b>Today 5-6 PM</b></p>
-    <button class="btn" onclick="closeOrder()">OK</button>
+<div id="popup">
+    <h2 style="color: #388e3c; margin: 0;">🎉 Order Placed!</h2>
+    <div id="bill-details" style="text-align: left; background: #f9f9f9; padding: 10px; margin: 15px 0; border: 1px dashed #ccc; font-size: 14px;"></div>
+    <p style="font-size: 12px;">Mee item <b>Today 5-6 PM</b> ki deliver avthundi.</p>
+    <button class="btn" onclick="closePopup()">OK</button>
 </div>
 
 <script>
-    // PAGE NAVIGATION
-    window.onload = function() {
+    const stationaryItems = [
+        { id: 1, name: "Long Size Notebook", price: 40, img: "https://cdn-icons-png.flaticon.com/512/3308/3308336.png" },
+        { id: 2, name: "Apsara Pencils (10pk)", price: 50, img: "https://cdn-icons-png.flaticon.com/512/583/583842.png" },
+        { id: 3, name: "Blue Gel Pen", price: 10, img: "https://cdn-icons-png.flaticon.com/512/581/581023.png" },
+        { id: 4, name: "Non-Dust Eraser", price: 5, img: "https://cdn-icons-png.flaticon.com/512/115/115911.png" },
+        { id: 5, name: "Steel Scale (15cm)", price: 20, img: "https://cdn-icons-png.flaticon.com/512/3069/3069351.png" },
+        { id: 6, name: "Sharpener", price: 5, img: "https://cdn-icons-png.flaticon.com/512/3069/3069389.png" }
+    ];
+
+    let cart = {};
+
+    function init() {
         let user = localStorage.getItem("h_user");
         if(user) {
+            document.getElementById('loginPage').style.display = 'none';
             document.getElementById('appPage').style.display = 'block';
-            document.getElementById('welcomeMsg').innerText = "Namaste, " + user;
+            document.getElementById('welcomeText').innerText = "Namaste, " + user;
+            renderProducts();
         } else {
             document.getElementById('loginPage').style.display = 'block';
         }
     }
 
-    // LOGIN LOGIC
     function doLogin() {
         let name = document.getElementById('uName').value;
         if(name) {
             localStorage.setItem("h_user", name);
             location.reload();
-        } else { alert("Enter Name!"); }
+        } else { alert("Please enter your name!"); }
     }
 
-    // ORDER LOGIC
-    function openOrder(item, price) {
-        let total = price + 10;
-        document.getElementById('billArea').innerHTML = `
-            Item: ${item}<br>Price: ₹${price}<br>Delivery: ₹10<br><hr><b>Total: ₹${total}</b>
+    function renderProducts() {
+        const grid = document.getElementById('product-list');
+        grid.innerHTML = stationaryItems.map(item => `
+            <div class="card">
+                <img src="${item.img}">
+                <div style="font-size: 14px; height: 35px; margin: 5px 0;">${item.name}</div>
+                <div class="price">₹${item.price}</div>
+                <div class="delivery">+ ₹10 Delivery</div>
+                <div id="btn-area-${item.id}">
+                    <button class="add-btn" onclick="addToCart(${item.id})">ADD</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function addToCart(id) {
+        cart[id] = 1;
+        updateItemUI(id);
+    }
+
+    function changeQty(id, delta) {
+        cart[id] += delta;
+        if(cart[id] <= 0) {
+            delete cart[id];
+            document.getElementById(`btn-area-${id}`).innerHTML = `<button class="add-btn" onclick="addToCart(${id})">ADD</button>`;
+        } else {
+            updateItemUI(id);
+        }
+    }
+
+    function updateItemUI(id) {
+        document.getElementById(`btn-area-${id}`).innerHTML = `
+            <div class="qty-box">
+                <button class="q-btn" onclick="changeQty(${id}, -1)">-</button>
+                <span>${cart[id]}</span>
+                <button class="q-btn" onclick="changeQty(${id}, 1)">+</button>
+            </div>
+            <button onclick="placeOrder(${id})" style="background:#fb641b; color:#fff; border:none; border-radius:4px; margin-top:10px; padding:5px; width:100%; cursor:pointer;">ORDER NOW</button>
         `;
-        document.getElementById('orderPopup').style.display = 'block';
+    }
+
+    function placeOrder(id) {
+        const item = stationaryItems.find(p => p.id === id);
+        const qty = cart[id];
+        const total = (item.price * qty) + 10;
+        
+        document.getElementById('bill-details').innerHTML = `
+            <b>Item:</b> ${item.name} (x${qty})<br>
+            <b>Item Price:</b> ₹${item.price * qty}<br>
+            <b>Delivery Fee:</b> ₹10<br>
+            <hr>
+            <b style="font-size: 16px;">Total Bill: ₹${total}</b>
+        `;
+        document.getElementById('popup').style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
     }
 
-    function closeOrder() {
-        document.getElementById('orderPopup').style.display = 'none';
+    function closePopup() {
+        document.getElementById('popup').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
     }
 
-    // AGENT LOGIN
-    function goToAgent() {
-        let pin = prompt("Agent Password:");
-        if(pin === "1234") {
-            document.getElementById('appPage').style.display = 'none';
-            document.getElementById('agentPage').style.display = 'block';
-        } else { alert("Wrong Password!"); }
-    }
+    init();
 </script>
 
 </body>
